@@ -1,0 +1,18 @@
+npm install dotenv
+npm install nodemon
+npm install sequelize sequelize-cli --save
+npx sequelize *utk melihat command sequelize-cli
+npx sequelize init *inisialisasi sequelize
+npx sequelize migration:create --name=create-table-users
+npx sequelize migration:create --name=create-table-refresh-tokens
+npx sequelize db:migrate
+npx sequelize db:migrate:undo *rollback --step=1
+npm install mysql2 --save
+
+- migration addContraint lihat di /migration/catatan.txt
+
+npx sequelize seed:create --name=user-seeders
+npm install bcrypt --save
+npx sequelize db:seed:all
+
+npm i fastest-validator //bisa pakai yup, tp ini lebih cepat

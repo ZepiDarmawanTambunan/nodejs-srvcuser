@@ -1,0 +1,87 @@
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('Users', {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      role: {
+        type: Sequelize.ENUM,
+        values: ['admin', 'student'],
+        allowNull: false,
+      },
+      age: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+          min: 18,
+        },
+      },
+      country_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Countries',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
+      // ...
+    });
+
+    await queryInterface.addConstraint('Users', {
+      fields: ['name', 'email'],
+      type: 'unique',
+      name: 'UNIQUE_USERS_NAME_EMAIL',
+    });
+
+    await queryInterface.addConstraint('Users', {
+      fields: ['role'],
+      type: 'check',
+      name: 'CHECK_USERS_ROLE',
+      where: {
+        role: ['admin', 'student'],
+      },
+    });
+
+    await queryInterface.addConstraint('Users', {
+      fields: ['age'],
+      type: 'check',
+      name: 'CHECK_USERS_AGE',
+      where: {
+        age: {
+          [Sequelize.Op.gte]: 18,
+        },
+      },
+    });
+
+    await queryInterface.addConstraint('Users', {
+      fields: ['country_id'],
+      type: 'foreign key',
+      name: 'FK_USERS_COUNTRY',
+      references: {
+        table: 'Countries',
+        field: 'id',
+      },
+      onDelete: 'cascade',
+    });
+  },
+  // ...
+};
+
+Pembatasan unik pada kombinasi kolom 'name' dan 'email'.
+Pembatasan cek pada kolom 'role' untuk memastikan nilainya hanya boleh 'admin' atau 'student'.
+Pembatasan cek pada kolom 'age' untuk memastikan nilai minimal adalah 18.
+Pembatasan kunci asing pada kolom 'country_id' yang merujuk ke kolom 'id' di tabel `'
